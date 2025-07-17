@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Source Code - My To-Do List</title>
+  
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+  
+  <style>
+    body {
+      background-color: #f8f9fa;
+      padding: 30px;
+      font-family: monospace, monospace;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #343a40;
+    }
+    .code-container {
+      background-color: #e9ecef;
+      border-radius: 5px;
+      padding: 20px;
+      overflow-x: auto;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      max-width: 900px;
+      margin: 0 auto 30px;
+      white-space: pre-wrap;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      color: #212529;
+    }
+    a.btn-back {
+      display: block;
+      max-width: 180px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Source Code: My To-Do List</h1>
+
+  <div class="code-container">
+<pre><code>var tasks = [];
+var nextId = 1;
+var editingId = 0;
+
+function addItem() {
+  var input = document.getElementById("myInput");
+  var text = input.value.trim();
+  if (text === "") {
+    input.value = "";
+    input.placeholder = "Please type a task.";
+    input.style.borderColor = "red";
+    return;
+  }
+  input.placeholder = "Enter a task";
+  input.style.borderColor = "";
+  tasks.push({ id: nextId, text: text });
+  nextId = nextId + 1;
+  input.value = "";
+  showList();
+}
+
+function showList() {
+  var html = "";
+  for (var i = 0; i &lt; tasks.length; i++) {
+    html += "&lt;div class='taskbox'&gt;" +
+              "&lt;span class='task-text'&gt;" + tasks[i].text + "&lt;/span&gt;" +
+              "&lt;div class='task-buttons'&gt;" +
+                "&lt;button class='btn btn-secondary btn-sm' onclick='editTask(" + tasks[i].id + ")'&gt;Edit&lt;/button&gt;" +
+                "&lt;button class='btn btn-danger btn-sm' onclick='deleteTask(" + tasks[i].id + ")'&gt;Delete&lt;/button&gt;" +
+              "&lt;/div&gt;" +
+            "&lt;/div&gt;";
+  }
+  document.getElementById("taskList").innerHTML = html;
+}
+
+function deleteTask(id) {
+  var newTasks = [];
+  for (var i = 0; i &lt; tasks.length; i++) {
+    if (tasks[i].id !== id) {
+      newTasks.push(tasks[i]);
+    }
+  }
+  tasks = newTasks;
+  showList();
+}
+
+function editTask(id) {
+  for (var i = 0; i &lt; tasks.length; i++) {
+    if (tasks[i].id === id) {
+      editingId = id;
+      document.getElementById("modalInput").value = tasks[i].text;
+      document.getElementById("modalErrorMsg").innerHTML = "";
+      showModal();
+      break;
+    }
+  }
+}
+
+function updateItem() {
+  var newText = document.getElementById("modalInput").value.trim();
+  var errorDiv = document.getElementById("modalErrorMsg");
+  if (newText === "") {
+    errorDiv.innerHTML = "Task text cannot be empty.";
+    return;
+  }
+  for (var i = 0; i &lt; tasks.length; i++) {
+    if (tasks[i].id === editingId) {
+      tasks[i].text = newText;
+      break;
+    }
+  }
+  closeModal();
+  showList();
+}
+
+function showModal() {
+  var modal = document.getElementById("editModal");
+  var overlay = document.getElementById("overlay");
+  modal.classList.add("show");
+  modal.style.display = "block";
+  overlay.style.display = "block";
+}
+
+function closeModal() {
+  var modal = document.getElementById("editModal");
+  var overlay = document.getElementById("overlay");
+  modal.classList.remove("show");
+  modal.style.display = "none";
+  overlay.style.display = "none";
+}
+
+function resetInputStyle(input) {
+  input.placeholder = "Enter a task";
+  input.style.borderColor = "";
+}
+
+function viewCode() {
+  var htmlCode = document.documentElement.outerHTML;
+  var newTab = window.open();
+  newTab.document.write('&lt;pre&gt;' + htmlCode.replace(/&lt;/g, "&amp;lt;").replace(/&gt;/g, "&amp;gt;") + '&lt;/pre&gt;');
+  newTab.document.title = "View Source Code";
+  newTab.document.close();
+}
+</code></pre>
+  </div>
+
+  <a href="index.html" class="btn btn-outline-primary btn-back">Back to To-Do List</a>
+
+</body>
+</html>
